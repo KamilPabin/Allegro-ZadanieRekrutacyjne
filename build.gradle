@@ -39,8 +39,16 @@ dependencies {
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
 	compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
+	compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
 	compile 'org.apache.httpcomponents:httpclient:4.5.4'
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
 	testCompile "org.spockframework:spock-core:1.1-groovy-2.4-rc-2"
+	testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+	testCompile "com.github.tomakehurst:wiremock-standalone:2.13.0"
+}
+
+bootRun {
+	environment SPRING_PROFILES_ACTIVE: environment.SPRING_PROFILES_ACTIVE ?: "integration"
 }

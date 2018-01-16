@@ -2,6 +2,6 @@ package com.pabin.kamil.ZadanieRekrutacyjne.ZadanieRekrutacyjne
 
 interface GithubClient {
 
-    fun getLastEdditedRepo(user : String) : GithubRepository
+    fun getLastEdditedRepository(user: String): GithubRepository
 
 }

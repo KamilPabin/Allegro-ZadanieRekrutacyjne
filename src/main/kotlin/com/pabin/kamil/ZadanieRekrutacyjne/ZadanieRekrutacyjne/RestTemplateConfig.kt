@@ -10,12 +10,12 @@ import org.springframework.web.client.RestTemplate
 class RestTemplateConfig {
 
     @Bean
-    fun githubRestTemplate() : RestTemplate{
+    fun githubRestTemplate(): RestTemplate {
         return RestTemplate(getHttpConfig())
     }
 
 
-    private fun getHttpConfig() : HttpComponentsClientHttpRequestFactory {
+    private fun getHttpConfig(): HttpComponentsClientHttpRequestFactory {
         val requestConfig = HttpComponentsClientHttpRequestFactory()
         requestConfig.setConnectTimeout(2000)
         requestConfig.setConnectionRequestTimeout(1000)

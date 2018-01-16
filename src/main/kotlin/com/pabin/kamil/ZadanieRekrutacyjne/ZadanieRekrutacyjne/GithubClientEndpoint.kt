@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-class ApiEndpoint(private val client: ClientService) {
+class GithubClientEndpoint(private val client: ClientService) {
 
 
     @GetMapping("/lastEdditedRepository")
-    fun getLastEdditedRepository() : ResponseEntity<GithubRepository> {
-        return ResponseEntity(client.getLastEdditedRepo("allegro"),HttpStatus.OK)
+    fun getLastEdditedRepository(): ResponseEntity<String> {
+        return ResponseEntity(client.getLastEdditedRepository("alwdetfnglegro").name, HttpStatus.OK)
     }
 
 }

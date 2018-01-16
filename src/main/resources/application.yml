@@ -1,0 +1,6 @@
+application:
+  name: zadanieRekrutacyjne
+
+
+origins:
+  github: https://api.github.com
