@@ -50,5 +50,5 @@ dependencies {
 }
 
 bootRun {
-	environment SPRING_PROFILES_ACTIVE: environment.SPRING_PROFILES_ACTIVE ?: "integration"
+	environment SPRING_PROFILES_ACTIVE: environment.SPRING_PROFILES_ACTIVE ?: "local"
 }

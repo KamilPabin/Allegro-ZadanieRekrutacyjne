@@ -2,5 +2,8 @@ application:
   name: zadanieRekrutacyjne
 
 
-origins:
-  github: https://api.github.com
+githubClient:
+  url: https://api.github.com
+  connectTimeout: 2000
+  connectionRequestTimeout: 1000
+  readTimeout: 2000

@@ -12,7 +12,7 @@ class GithubClientEndpoint(private val client: ClientService) {
 
     @GetMapping("/lastEdditedRepository")
     fun getLastEdditedRepository(): ResponseEntity<String> {
-        return ResponseEntity(client.getLastEdditedRepository("alwdetfnglegro").name, HttpStatus.OK)
+        return ResponseEntity(client.getLastEdditedRepository("allegro").name, HttpStatus.OK)
     }
 
 }

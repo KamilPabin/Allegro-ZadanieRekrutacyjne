@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -25,16 +24,12 @@ class GithubClientIntegrationTest extends Specification {
 
     def "should return last eddited repository by allegro"() {
         given:
-        wireMockRule.
-                stubFor(WireMock.get(
-                        WireMock.urlEqualTo("/users/allegro/repos?sort=pushed"))
-                        .willReturn(WireMock.aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody('[{"name":"ralph","full_name":"allegro/ralph","pushed_at":"2018-01-12T14:18:15Z"}]')))
-
+        stubGithubService(200,
+                '[{"name":"ralph","full_name":"allegro/ralph","pushed_at":"2018-01-12T14:18:15Z"},' +
+                        '{"name":"mesos-executor","full_name":"allegro/mesos-executor","pushed_at":"2017-01-12T14:18:15Z"},' +
+                        '{"name":"hermes","full_name":"allegro/hermes","pushed_at":"2016-01-12T14:18:15Z"}]',
+                "/users/allegro/repos?sort=pushed")
         when:
-
         def result = clientService.getLastEdditedRepository("allegro").name
 
         then:
@@ -42,38 +37,38 @@ class GithubClientIntegrationTest extends Specification {
 
     }
 
-    def "should throw HttpClientNotFoundException"() {
+    def "should throw UserNotFoundException"() {
         given:
-        wireMockRule.
-                stubFor(WireMock.get(
-                        WireMock.urlEqualTo("/users/not_a_real_user213/repos?sort=pushed"))
-                        .willReturn(WireMock.aResponse()
-                        .withStatus(404)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody('{"message":"Not Found","documentation_url":"https://developer.github.com/v3/repos/#list-user-repositories"}')))
-
+        stubGithubService(404, '{"message":"Not Found",' +
+                '"documentation_url":"https://developer.github.com/v3/repos/#list-user-repositories"}',
+                "/users/not_a_real_user213/repos?sort=pushed")
         when:
-
         def result = clientService.getLastEdditedRepository("not_a_real_user213")
 
         then:
-        thrown(HttpClientErrorException)
+        thrown(UserNotFoundException)
     }
 
     def "should throw EmptyRepositoryException"() {
         given:
-        wireMockRule
-                .stubFor(WireMock.get(
-                WireMock.urlEqualTo("/users/kamilPabin/repos?sort=pushed"))
-                .willReturn(WireMock.aResponse()
-                .withStatus(200)
-                .withHeader("Content-Type", "application/json")
-                .withBody("[]")))
+        stubGithubService(200, "[]",
+                "/users/kamilPabin/repos?sort=pushed")
 
         when:
         def result = clientService.getLastEdditedRepository("kamilPabin")
 
         then:
         thrown(EmptyRepositoryException)
+    }
+
+    def stubGithubService(int statusCode, String body, String URL) {
+        return wireMockRule
+                .stubFor(
+                WireMock.get(
+                        WireMock.urlEqualTo(URL))
+                        .willReturn(WireMock.aResponse()
+                        .withStatus(statusCode)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(body)))
     }
 }
