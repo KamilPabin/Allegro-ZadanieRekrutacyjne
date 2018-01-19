@@ -1,26 +1,14 @@
 package com.pabin.kamil.ZadanieRekrutacyjne.ZadanieRekrutacyjne
 
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.junit.WireMockClassRule
-import org.junit.ClassRule
+import com.pabin.kamil.ZadanieRekrutacyjne.ZadanieRekrutacyjne.client.GithubClient
+import com.pabin.kamil.ZadanieRekrutacyjne.ZadanieRekrutacyjne.client.UserNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-import spock.lang.Shared
-import spock.lang.Specification
 
-@ContextConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = ["integration"])
-class GithubClientIntegrationTest extends Specification {
+class GithubClientIntegrationTest extends IntegrationTest {
 
-    @Shared
-    @ClassRule
-    WireMockClassRule wireMockRule = new WireMockClassRule(8089)
 
     @Autowired
-    ClientService clientService
+    GithubClient githubClient
 
     def "should return last eddited repository by allegro"() {
         given:
@@ -29,11 +17,12 @@ class GithubClientIntegrationTest extends Specification {
                         '{"name":"mesos-executor","full_name":"allegro/mesos-executor","pushed_at":"2017-01-12T14:18:15Z"},' +
                         '{"name":"hermes","full_name":"allegro/hermes","pushed_at":"2016-01-12T14:18:15Z"}]',
                 "/users/allegro/repos?sort=pushed")
+
         when:
-        def result = clientService.getLastEdditedRepository("allegro").name
+        def result = githubClient.getRepositoriesSortedByPushedDate("allegro")
 
         then:
-        result == "ralph"
+        result.collect({ it.name }) == ["ralph", "mesos-executor", "hermes"]
 
     }
 
@@ -43,32 +32,10 @@ class GithubClientIntegrationTest extends Specification {
                 '"documentation_url":"https://developer.github.com/v3/repos/#list-user-repositories"}',
                 "/users/not_a_real_user213/repos?sort=pushed")
         when:
-        def result = clientService.getLastEdditedRepository("not_a_real_user213")
+        githubClient.getRepositoriesSortedByPushedDate("not_a_real_user213")
 
         then:
         thrown(UserNotFoundException)
     }
 
-    def "should throw EmptyRepositoryException"() {
-        given:
-        stubGithubService(200, "[]",
-                "/users/kamilPabin/repos?sort=pushed")
-
-        when:
-        def result = clientService.getLastEdditedRepository("kamilPabin")
-
-        then:
-        thrown(EmptyRepositoryException)
-    }
-
-    def stubGithubService(int statusCode, String body, String URL) {
-        return wireMockRule
-                .stubFor(
-                WireMock.get(
-                        WireMock.urlEqualTo(URL))
-                        .willReturn(WireMock.aResponse()
-                        .withStatus(statusCode)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(body)))
-    }
 }

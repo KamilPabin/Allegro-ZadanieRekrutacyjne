@@ -1,4 +1,4 @@
-package com.pabin.kamil.ZadanieRekrutacyjne.ZadanieRekrutacyjne
+package com.pabin.kamil.ZadanieRekrutacyjne.ZadanieRekrutacyjne.client
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
