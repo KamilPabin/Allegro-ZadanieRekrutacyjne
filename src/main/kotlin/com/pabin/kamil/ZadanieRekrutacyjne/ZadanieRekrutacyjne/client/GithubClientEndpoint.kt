@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController
 class GithubClientEndpoint(private val client: ClientService) {
 
     @GetMapping("/users/{user}/lastEdit")
-    fun getLastEdditedRepository(@PathVariable user : String):
+    fun getLastEditedRepository(@PathVariable user: String):
             ResponseEntity<GithubRepository> {
-        val repository = client.getLastEdditedRepository(user)
+        val repository = client.getLastEditedRepository(user)
         return ResponseEntity(repository, HttpStatus.OK)
     }
 

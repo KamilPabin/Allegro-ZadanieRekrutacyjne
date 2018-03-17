@@ -31,14 +31,14 @@ class GithubClientEndpointTest extends IntegrationTest {
                 "/users/allegro/repos?sort=pushed")
 
         when:
-        def response = restTemplate.getForEntity("http://localhost:$port/users/allegro/lastEdit", GithubRepository)
+        restTemplate.getForEntity("http://localhost:$port/users/allegro/lastEdit", GithubRepository)
 
         then:
         def exception = thrown(HttpClientErrorException)
         exception.statusCode == HttpStatus.NOT_FOUND
     }
 
-    def "Should return empty JSON"() {
+    def "Should return status code 204 - NO_CONTENT"() {
         given:
         stubGithubService(200,
                 '[]',

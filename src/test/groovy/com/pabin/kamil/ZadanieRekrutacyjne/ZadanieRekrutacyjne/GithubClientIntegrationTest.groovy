@@ -10,7 +10,7 @@ class GithubClientIntegrationTest extends IntegrationTest {
     @Autowired
     GithubClient githubClient
 
-    def "should return last eddited repository by allegro"() {
+    def "should return last edited repository by allegro"() {
         given:
         stubGithubService(200,
                 '[{"name":"ralph","full_name":"allegro/ralph","pushed_at":"2018-01-12T14:18:15Z"},' +

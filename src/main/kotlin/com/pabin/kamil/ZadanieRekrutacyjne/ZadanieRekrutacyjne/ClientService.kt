@@ -7,11 +7,10 @@ import org.springframework.stereotype.Service
 @Service
 class ClientService(private val githubClient: GithubClient) {
 
-    fun getLastEdditedRepository(name: String): GithubRepository {
-        val allRepositories = githubClient.getRepositoriesSortedByPushedDate(name)
+    fun getLastEditedRepository(user: String): GithubRepository {
+        val allRepositories = githubClient.getRepositoriesSortedByPushedDate(user)
         if(allRepositories.isEmpty())
             throw NoRepositoriesFoundException()
-        System.out.print(allRepositories.size)
         return allRepositories.first()
 
     }
